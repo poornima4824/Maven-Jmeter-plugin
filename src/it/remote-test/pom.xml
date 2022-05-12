@@ -1,0 +1,111 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.lazerycode.jmeter</groupId>
+    <artifactId>test-plugins</artifactId>
+    <version>DEV-SNAPSHOT</version>
+
+    <description>JMeter test to check that extensions work</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>init-build-properties</id>
+                        <goals>
+                            <goal>hostname</goal>
+                        </goals>
+                        <configuration>
+                            <hostnameProperty>local.hostname</hostnameProperty>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.lazerycode.jmeter</groupId>
+                <artifactId>jmeter-maven-plugin</artifactId>
+                <version>DEV-SNAPSHOT</version>
+                <configuration>
+                    <generateReports>true</generateReports>
+                    <scanResultsForSuccessfulRequests>true</scanResultsForSuccessfulRequests>
+                    <scanResultsForFailedRequests>true</scanResultsForFailedRequests>
+                    <ignoreResultFailures>true</ignoreResultFailures>
+                    <downloadOptionalDependencies>false</downloadOptionalDependencies>
+                    <propertiesUser>
+                        <threads>5</threads>
+                        <duration>5</duration>
+                        <rampup>2</rampup>
+                    </propertiesUser>
+                    <jmeterExtensions>
+                        <artifact>kg.apc:jmeter-plugins-casutg:2.6</artifact>
+                    </jmeterExtensions>
+                    <excludedArtifacts>
+                        <exclusion>commons-pool2:commons-pool2</exclusion>
+                        <exclusion>commons-math3:commons-math3</exclusion>
+                        <exclusion>org.slf4j:slf4j-nop</exclusion>
+                        <exclusion>logkit:logkit</exclusion>
+                        <exclusion>avalon-logkit:avalon-logkit</exclusion>
+                        <exclusion>jdom:jdom</exclusion>
+                        <exclusion>log4j:log4j</exclusion>
+                        <exclusion>commons-logging:commons-logging</exclusion>
+                        <exclusion>excalibur-logger:excalibur-logger</exclusion>
+                    </excludedArtifacts>
+                    <testFilesIncluded>
+                        <jMeterTestFile>test.jmx</jMeterTestFile>
+                    </testFilesIncluded>
+                    <exportedRmiHostname>${local.hostname}</exportedRmiHostname>
+                    <serverPort>3010</serverPort>
+                    <remoteConfig>
+                        <serverList>${local.hostname}:3010</serverList>
+                        <startAndStopServersForEachTest>true</startAndStopServersForEachTest>
+                    </remoteConfig>
+                    <jMeterProcessJVMSettings>
+                        <arguments>
+                            <argument>-Djava.rmi.server.hostname=${local.hostname}</argument>
+                        </arguments>
+                    </jMeterProcessJVMSettings>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>configuration</id>
+                        <goals>
+                            <goal>configure</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>start jmeter-server</id>
+                        <goals>
+                            <goal>remote-server</goal>
+                        </goals>
+                        <configuration>
+                            <runInBackground>true</runInBackground>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>performance test</id>
+                        <goals>
+                            <goal>jmeter</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>results</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

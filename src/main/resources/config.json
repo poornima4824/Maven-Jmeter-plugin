@@ -1,0 +1,8 @@
+{
+  "default": {
+    "executionID": "configuration",
+    "resultFilesLocations": [],
+    "resultsOutputIsCSVFormat": false,
+    "generateReports": false
+  }
+}
